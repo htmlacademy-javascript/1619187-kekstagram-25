@@ -106,8 +106,7 @@ const createComments = function () {
   };
 };
 const SIMILAR_COMMENT_COUNT = 2;
-const similarComments = Array.from({length: SIMILAR_COMMENT_COUNT }, createComments);
-
+const similarComments =  Array.from({length: SIMILAR_COMMENT_COUNT }, createComments);
 
 //photo description
 const createPhotoDescription = function () {
@@ -120,9 +119,8 @@ const createPhotoDescription = function () {
   };
 };
 
-const SIMILAR_PHOTO_DESCRIPTION_COUNT = 25;
-const similarPhotoDescription = function () {
-  return Array.from({length: SIMILAR_PHOTO_DESCRIPTION_COUNT  }, createPhotoDescription);
+const similarPhotoDescription = function (count) {
+  return Array.from({length: count }, createPhotoDescription);
 };
 
-similarPhotoDescription();
+export {similarPhotoDescription};

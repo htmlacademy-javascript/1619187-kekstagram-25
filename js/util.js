@@ -7,11 +7,11 @@ const getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (ROUNDED_TO_BOTTOM - ROUNDED_TO_TOP + 1)) + ROUNDED_TO_TOP;
 };
 
-const isLessThanMax = function (str, maxLength) {
-  return (str.length <= maxLength);
-};
+// const isLessThanMax = function (str, maxLength) {
+// return (str.length <= maxLength);
+//};
 
-isLessThanMax();
+//isLessThanMax();
 
 const getRandomArrayElement = function (elements) {
   return elements[getRandomNumber(0, elements.length - 1)];
