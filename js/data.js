@@ -105,7 +105,7 @@ const createComments = function () {
     name: getRandomArrayElement(NAMES),
   };
 };
-const SIMILAR_COMMENT_COUNT = 2;
+const SIMILAR_COMMENT_COUNT = 5;
 const similarComments =  Array.from({length: SIMILAR_COMMENT_COUNT }, createComments);
 
 //photo description
