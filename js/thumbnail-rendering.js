@@ -1,5 +1,5 @@
 import {similarPhotoDescription} from './data.js';
-import {generateModal} from './full-size-modal.js';
+import {generateModal, openUserModal} from './full-size-modal.js';
 
 const pictureTemplate = document.querySelector('#picture')
   .content
@@ -19,6 +19,7 @@ similarPictures.forEach((data) => {
   pictureElement.querySelector('.picture__comments').textContent = comments.length;
   pictureElement.addEventListener('click', () => {
     generateModal(data);
+    openUserModal();
   });
   similarListFragment.appendChild(pictureElement);
 });
