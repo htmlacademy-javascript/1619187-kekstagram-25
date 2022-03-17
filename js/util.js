@@ -8,13 +8,15 @@ const getRandomNumber = function (min, max) {
 };
 
 // const isLessThanMax = function (str, maxLength) {
-// return (str.length <= maxLength);
-//};
+//   return (str.length <= maxLength);
+// };
 
-//isLessThanMax();
 
 const getRandomArrayElement = function (elements) {
   return elements[getRandomNumber(0, elements.length - 1)];
 };
 
-export {getRandomArrayElement,getRandomNumber};
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+
+export {getRandomArrayElement,getRandomNumber, isEscapeKey};
