@@ -105,8 +105,10 @@ const createComments = function () {
     name: getRandomArrayElement(NAMES),
   };
 };
-const SIMILAR_COMMENT_COUNT = 5;
-const similarComments =  Array.from({length: SIMILAR_COMMENT_COUNT }, createComments);
+const SIMILAR_COMMENT_COUNT = 21;
+const similarComments =  function () {
+  return Array.from({length: SIMILAR_COMMENT_COUNT }, createComments);
+};
 
 //photo description
 const createPhotoDescription = function () {
@@ -115,12 +117,12 @@ const createPhotoDescription = function () {
     url: getRandomUrl(),
     description: getRandomArrayElement(DESCRIPTIONS),
     likes: getRandomLikes(),
-    comments: similarComments,
+    comments: similarComments(),
   };
 };
 
 const similarPhotoDescription = function (count) {
-  return Array.from({length: count }, createPhotoDescription);
+  return Array.from({length: count}, createPhotoDescription);
 };
 
 export {similarPhotoDescription};
