@@ -8,7 +8,6 @@ const pictureTemplate = document.querySelector('#picture')
 const similarListElement = document.querySelector('.pictures');
 
 const similarPictures = similarPhotoDescription(25);
-
 const similarListFragment = document.createDocumentFragment();
 
 similarPictures.forEach((data) => {
