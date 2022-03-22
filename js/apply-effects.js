@@ -24,8 +24,9 @@ noUiSlider.create(effectSlider, {
   connect: 'lower',
 });
 
-const click = function () {
+const changeheLevelEffect = function () {
   picrurePreviev.style.filter = 'none';
+
   switch(picrurePreviev.className) {
     case 'effects__preview--chrome':
       picrurePreviev.style.filter = `grayscale(${effectValue.value})`;
@@ -50,11 +51,11 @@ const click = function () {
 
 effectSlider.noUiSlider.on('update', () => {
   effectValue.value = effectSlider.noUiSlider.get();
-  click();
+  changeheLevelEffect();
 });
 
 
-const addCheckHandler2 = function (effectItem) {
+const changeSliderRange = function (effectItem) {
   const effectsRadio = effectItem.querySelector('.effects__radio');
   effectSlider.setAttribute('disabled', true);
 
@@ -101,11 +102,20 @@ const addCheckHandler2 = function (effectItem) {
       });
     } else if (picrurePreviev.className === 'effects__preview--none') {
       effectSlider.setAttribute('disabled', true);
+      effectSlider.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 100,
+        },
+        start: 100,
+        step: 1,
+        connect: 'lower',
+      });
     }
   });
 };
 
 for (let i = 0; i < effectsItems.length; i++) {
   addCheckHandler(effectsItems[i]);
-  addCheckHandler2(effectsItems[i]);
+  changeSliderRange(effectsItems[i]);
 }
