@@ -1,11 +1,16 @@
 import {body} from './full-size-modal.js';
 import {isEscapeKey} from './util.js';
+import './apply-effects.js';
 
 const inputElement = document.querySelector('#upload-file');
 const imageEditingForm = document.querySelector('.img-upload__overlay');
 const closeButtonForm = document.querySelector('.img-upload__cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagsText = form.querySelector('.text__hashtags');
+const scaleControlSmaller = document.querySelector('.scale__control--smaller');
+const scaleControlBigger = document.querySelector('.scale__control--bigger');
+const scaleControlValue = document.querySelector('.scale__control--value');
+const picrurePreviev = document.querySelector('.img-upload__preview img');
 
 const handleFiles = function () {
   const fileList = this.files;
@@ -20,11 +25,35 @@ const onFormEscKeydown = (evt) => {
   }
 };
 
+const scaleState = {
+  step: 25,
+  maxValue: 100,
+  mainValue: 25,
+  defaultValue: 100,
+};
+
+const changesScaleMin = function () {
+  if (parseInt(scaleControlValue.value, 10) > scaleState.mainValue) {
+    scaleControlValue.value = `${parseInt(scaleControlValue.value, 10) - scaleState.step} %`;
+    picrurePreviev.style.transform = `scale(${parseInt(scaleControlValue.value, 10)/100})`;
+  }
+};
+
+const changesScaleMax = function () {
+  if (parseInt(scaleControlValue.value, 10) < scaleState.maxValue) {
+    scaleControlValue.value = `${parseInt(scaleControlValue.value, 10) + scaleState.step} %`;
+    picrurePreviev.style.transform = `scale(${parseInt(scaleControlValue.value, 10)/100})`;
+  }
+};
+
 const openUserForm = function () {
   imageEditingForm.classList.remove('hidden');
   body.classList.add('modal-open');
+  scaleControlValue.value =`${scaleState.defaultValue} %`;
 
   document.addEventListener('keydown', onFormEscKeydown);
+  scaleControlSmaller.addEventListener('click', changesScaleMin);
+  scaleControlBigger.addEventListener('click', changesScaleMax);
 };
 
 inputElement.addEventListener('change', handleFiles);
@@ -35,8 +64,12 @@ const closeUserForm = function () {
   imageEditingForm.classList.add('hidden');
   body.classList.remove('modal-open');
   inputElement.name = 'filename';
+  picrurePreviev.className = '';
+  picrurePreviev.style.filter = '';
 
   document.removeEventListener('keydown', onFormEscKeydown);
+  scaleControlSmaller.removeEventListener('click', changesScaleMin);
+  scaleControlBigger.removeEventListener('click', changesScaleMax);
 };
 
 closeButtonForm.addEventListener('click', closeUserForm);
