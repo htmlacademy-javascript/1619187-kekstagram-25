@@ -97,7 +97,7 @@ const getRandomAvatar = function () {
 
 //create comments
 
-const createComments = function () {
+const createCommentObject = function () {
   return {
     id: getRandomIdComment(),
     avatar: getRandomAvatar(),
@@ -106,8 +106,8 @@ const createComments = function () {
   };
 };
 const SIMILAR_COMMENT_COUNT = 21;
-const similarComments =  function () {
-  return Array.from({length: SIMILAR_COMMENT_COUNT }, createComments);
+const createCommentsArray =  function () {
+  return Array.from({length: SIMILAR_COMMENT_COUNT }, createCommentObject);
 };
 
 //photo description
@@ -117,7 +117,7 @@ const createPhotoDescription = function () {
     url: getRandomUrl(),
     description: getRandomArrayElement(DESCRIPTIONS),
     likes: getRandomLikes(),
-    comments: similarComments(),
+    comments: createCommentsArray(),
   };
 };
 
