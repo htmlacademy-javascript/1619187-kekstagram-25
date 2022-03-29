@@ -1,20 +1,24 @@
 import {body} from './full-size-modal.js';
 import {isEscapeKey} from './util.js';
 import './apply-effects.js';
+import {sendData} from './api.js';
+
 
 const inputElement = document.querySelector('#upload-file');
 const imageEditingForm = document.querySelector('.img-upload__overlay');
 const closeButtonForm = document.querySelector('.img-upload__cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagsText = form.querySelector('.text__hashtags');
+const descriptionText = form.querySelector('.text__description');
 const scaleControlSmaller = document.querySelector('.scale__control--smaller');
 const scaleControlBigger = document.querySelector('.scale__control--bigger');
 const scaleControlValue = document.querySelector('.scale__control--value');
 const picrurePreviev = document.querySelector('.img-upload__preview img');
+const submitButton = document.querySelector('.img-upload__submit');
 
 const handleFiles = function () {
   const fileList = this.files;
-  inputElement.name = fileList[0].name;
+  inputElement.value = fileList[0].name;
 };
 
 const onFormEscKeydown = (evt) => {
@@ -63,9 +67,11 @@ inputElement.addEventListener('change', openUserForm);
 const closeUserForm = function () {
   imageEditingForm.classList.add('hidden');
   body.classList.remove('modal-open');
-  inputElement.name = 'filename';
   picrurePreviev.className = '';
-  picrurePreviev.style.filter = '';
+  picrurePreviev.style.filter = 'none';
+  picrurePreviev.style.transform = 'scale(1)';
+  hashtagsText.value = '';
+  descriptionText.value = '';
 
   document.removeEventListener('keydown', onFormEscKeydown);
   scaleControlSmaller.removeEventListener('click', changesScaleMin);
@@ -82,11 +88,36 @@ const pristine = new Pristine(form, {
   errorTextParent: 'text__label',
   errorTextClass: 'text__label--error-text',
 });
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикую...';
+};
 
-form.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-});
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const setUserFormSubmit = (onSuccess, onFail) => {
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+        },
+        () => {
+          onFail();
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
 
 pristine.addValidator(hashtagsText, (value) => {
   const result = value.split(' ').reduce((acc, hashtag) => {
@@ -148,3 +179,5 @@ pristine.addValidator(hashtagsText, (value) => {
   }
   return result;
 }, 'Хеш-тег не может состоять только из одной решётки;', 2, false);
+
+export {closeUserForm, setUserFormSubmit};

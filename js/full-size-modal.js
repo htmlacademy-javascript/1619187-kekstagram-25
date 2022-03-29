@@ -56,7 +56,9 @@ const generateModal = (data) => {
       commentsState.countRenderComments = commentsState.totalCountComments;
       socialCommentsCount.textContent = `${commentsState.countRenderComments} из ${commentsState.totalCountComments} комментариев`;
     }
-
+    if (commentsState.countRenderComments === commentsState.totalCountComments) {
+      commentsLoader.style.display = 'none';
+    }
   };
   commentsLoader.addEventListener('click', clickHandler);
 
