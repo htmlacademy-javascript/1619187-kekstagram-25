@@ -25,7 +25,6 @@ noUiSlider.create(effectSlider, {
 });
 
 const changeheLevelEffect = function () {
-  picrurePreviev.style.filter = 'none';
 
   switch(picrurePreviev.className) {
     case 'effects__preview--chrome':

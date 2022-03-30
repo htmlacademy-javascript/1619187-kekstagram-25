@@ -15,11 +15,8 @@ const scaleControlBigger = document.querySelector('.scale__control--bigger');
 const scaleControlValue = document.querySelector('.scale__control--value');
 const picrurePreviev = document.querySelector('.img-upload__preview img');
 const submitButton = document.querySelector('.img-upload__submit');
-
-const handleFiles = function () {
-  const fileList = this.files;
-  inputElement.value = fileList[0].name;
-};
+const InputOriginalEffect = document.querySelector('#effect-none');
+const effectSlider = document.querySelector('.effect-level__slider');
 
 const onFormEscKeydown = (evt) => {
   if (isEscapeKey(evt) && evt.target === inputElement) {
@@ -60,15 +57,26 @@ const openUserForm = function () {
   scaleControlBigger.addEventListener('click', changesScaleMax);
 };
 
-inputElement.addEventListener('change', handleFiles);
 inputElement.addEventListener('change', openUserForm);
 
 
 const closeUserForm = function () {
   imageEditingForm.classList.add('hidden');
   body.classList.remove('modal-open');
-  picrurePreviev.className = '';
+  picrurePreviev.className = 'effects__preview--none';
   picrurePreviev.style.filter = 'none';
+  inputElement.value = null;
+  InputOriginalEffect.checked = 'checked';
+  effectSlider.setAttribute('disabled', true);
+  effectSlider.noUiSlider.updateOptions({
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 1,
+    connect: 'lower',
+  });
   picrurePreviev.style.transform = 'scale(1)';
   hashtagsText.value = '';
   descriptionText.value = '';
@@ -98,7 +106,7 @@ const unblockSubmitButton = () => {
   submitButton.textContent = 'Опубликовать';
 };
 
-const setUserFormSubmit = (onSuccess, onFail) => {
+const setUserFormSubmit = (onSuccess) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
@@ -110,14 +118,16 @@ const setUserFormSubmit = (onSuccess, onFail) => {
           unblockSubmitButton();
         },
         () => {
-          onFail();
           unblockSubmitButton();
+          closeUserForm();
         },
         new FormData(evt.target),
       );
     }
   });
 };
+
+setUserFormSubmit(closeUserForm);
 
 pristine.addValidator(hashtagsText, (value) => {
   const result = value.split(' ').reduce((acc, hashtag) => {
