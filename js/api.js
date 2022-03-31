@@ -11,7 +11,7 @@ const errorTemplate = document.querySelector('#error')
 
 
 const getData = (onSuccess) => {
-  fetch('https://25.javascript.pages.academy/kekstagram/data')
+  fetch('https://25.javascript.pages.academy/kekstagram/dat')
     .then((response) => response.json())
     .then((similarPictures) => {
       if (similarPictures.length) {
@@ -20,8 +20,9 @@ const getData = (onSuccess) => {
         showAlert('Нет данных!');
       }
     })
-    .catch(() => {
+    .catch((err) => {
       showAlert('Невозможно загрузить изображения!');
+      console.error(err);
     });
 };
 const succesElement = succesTemplate.cloneNode(true);
@@ -114,7 +115,8 @@ const sendData = (onSuccess, onFail, FormBody) => {
         onFail(createErrorMessage());
       }
     })
-    .catch(() => {
+    .catch((err) => {
+      console.error(err);
       onFail(createErrorMessage());
     });
 };
