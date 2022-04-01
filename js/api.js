@@ -1,3 +1,5 @@
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+
 import {body} from './full-size-modal.js';
 import {showAlert} from './util.js';
 import {isEscapeKey} from './util.js';
@@ -8,7 +10,6 @@ const succesTemplate = document.querySelector('#success')
 const errorTemplate = document.querySelector('#error')
   .content
   .querySelector('.error');
-
 
 const getData = (onSuccess) => {
   fetch('https://25.javascript.pages.academy/kekstagram/data')
@@ -116,8 +117,8 @@ const sendData = (onSuccess, onFail, FormBody) => {
       }
     })
     .catch((err) => {
-      console.error(err);
       onFail(createErrorMessage());
+      console.error(err);
     });
 };
 
