@@ -1,21 +1,22 @@
 import {body} from './full-size-modal.js';
 import {isEscapeKey} from './util.js';
 import './apply-effects.js';
+import {sendData} from './api.js';
+
 
 const inputElement = document.querySelector('#upload-file');
 const imageEditingForm = document.querySelector('.img-upload__overlay');
 const closeButtonForm = document.querySelector('.img-upload__cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagsText = form.querySelector('.text__hashtags');
+const descriptionText = form.querySelector('.text__description');
 const scaleControlSmaller = document.querySelector('.scale__control--smaller');
 const scaleControlBigger = document.querySelector('.scale__control--bigger');
 const scaleControlValue = document.querySelector('.scale__control--value');
 const picrurePreviev = document.querySelector('.img-upload__preview img');
-
-const handleFiles = function () {
-  const fileList = this.files;
-  inputElement.name = fileList[0].name;
-};
+const submitButton = document.querySelector('.img-upload__submit');
+const InputOriginalEffect = document.querySelector('#effect-none');
+const effectSlider = document.querySelector('.effect-level__slider');
 
 const onFormEscKeydown = (evt) => {
   if (isEscapeKey(evt) && evt.target === inputElement) {
@@ -56,16 +57,29 @@ const openUserForm = function () {
   scaleControlBigger.addEventListener('click', changesScaleMax);
 };
 
-inputElement.addEventListener('change', handleFiles);
 inputElement.addEventListener('change', openUserForm);
 
 
 const closeUserForm = function () {
   imageEditingForm.classList.add('hidden');
   body.classList.remove('modal-open');
-  inputElement.name = 'filename';
-  picrurePreviev.className = '';
-  picrurePreviev.style.filter = '';
+  picrurePreviev.className = 'effects__preview--none';
+  picrurePreviev.style.filter = 'none';
+  inputElement.value = null;
+  InputOriginalEffect.checked = 'checked';
+  effectSlider.setAttribute('disabled', true);
+  effectSlider.noUiSlider.updateOptions({
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 1,
+    connect: 'lower',
+  });
+  picrurePreviev.style.transform = 'scale(1)';
+  hashtagsText.value = '';
+  descriptionText.value = '';
 
   document.removeEventListener('keydown', onFormEscKeydown);
   scaleControlSmaller.removeEventListener('click', changesScaleMin);
@@ -82,11 +96,38 @@ const pristine = new Pristine(form, {
   errorTextParent: 'text__label',
   errorTextClass: 'text__label--error-text',
 });
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикую...';
+};
 
-form.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-});
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const setUserFormSubmit = (onSuccess) => {
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+        },
+        () => {
+          unblockSubmitButton();
+          closeUserForm();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
+
+setUserFormSubmit(closeUserForm);
 
 pristine.addValidator(hashtagsText, (value) => {
   const result = value.split(' ').reduce((acc, hashtag) => {
@@ -148,3 +189,5 @@ pristine.addValidator(hashtagsText, (value) => {
   }
   return result;
 }, 'Хеш-тег не может состоять только из одной решётки;', 2, false);
+
+export {closeUserForm, setUserFormSubmit};
