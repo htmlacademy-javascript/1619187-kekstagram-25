@@ -5,6 +5,7 @@ import {sendData} from './api.js';
 
 
 const inputElement = document.querySelector('#upload-file');
+const picrurePreviev = document.querySelector('.img-upload__preview img');
 const imageEditingForm = document.querySelector('.img-upload__overlay');
 const closeButtonForm = document.querySelector('.img-upload__cancel');
 const form = document.querySelector('.img-upload__form');
@@ -13,7 +14,6 @@ const descriptionText = form.querySelector('.text__description');
 const scaleControlSmaller = document.querySelector('.scale__control--smaller');
 const scaleControlBigger = document.querySelector('.scale__control--bigger');
 const scaleControlValue = document.querySelector('.scale__control--value');
-const picrurePreviev = document.querySelector('.img-upload__preview img');
 const submitButton = document.querySelector('.img-upload__submit');
 const InputOriginalEffect = document.querySelector('#effect-none');
 const effectSlider = document.querySelector('.effect-level__slider');
@@ -25,6 +25,19 @@ const onFormEscKeydown = (evt) => {
     body.classList.remove('modal-open');
   }
 };
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
+
+inputElement.addEventListener('change', () => {
+  const file = inputElement.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    picrurePreviev.src = URL.createObjectURL(file);
+  }
+
+});
 
 const scaleState = {
   step: 25,
