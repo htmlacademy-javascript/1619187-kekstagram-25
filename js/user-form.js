@@ -1,7 +1,7 @@
 import {body} from './full-size-modal.js';
 import {isEscapeKey} from './util.js';
 import './apply-effects.js';
-import {sendData} from './api.js';
+import {sendData, createErrorMessage, createSuccessMessage} from './api.js';
 
 
 const inputElement = document.querySelector('#upload-file');
@@ -18,6 +18,8 @@ const submitButton = document.querySelector('.img-upload__submit');
 const InputOriginalEffect = document.querySelector('#effect-none');
 const effectSlider = document.querySelector('.effect-level__slider');
 
+const IMAGE_TYPES = ['jpg', 'jpeg', 'png'];
+
 const onFormEscKeydown = (evt) => {
   if (isEscapeKey(evt) && evt.target === inputElement) {
     evt.preventDefault();
@@ -25,18 +27,16 @@ const onFormEscKeydown = (evt) => {
     body.classList.remove('modal-open');
   }
 };
-const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
-inputElement.addEventListener('change', () => {
-  const file = inputElement.files[0];
-  const fileName = file.name.toLowerCase();
+inputElement.addEventListener('change', (evt) => {
+  const file = evt.target.files[0];
+  if (!file) {return;}
+  const fileExtension = file.name.toLowerCase().split('.').at(-1);
 
-  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
-
-  if (matches) {
+  const isImage = IMAGE_TYPES.includes(fileExtension);
+  if (isImage) {
     picrurePreviev.src = URL.createObjectURL(file);
   }
-
 });
 
 const scaleState = {
@@ -135,6 +135,8 @@ const setUserFormSubmit = (onSuccess) => {
           closeUserForm();
         },
         new FormData(evt.target),
+        createSuccessMessage,
+        createErrorMessage,
       );
     }
   });

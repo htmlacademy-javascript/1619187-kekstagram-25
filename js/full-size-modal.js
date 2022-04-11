@@ -15,6 +15,8 @@ const commentsState = {
   countRenderComments: 0,
   step: 5,
 };
+const step = commentsState.step;
+let countRenderComments = commentsState.countRenderComments;
 
 const renderComments = ({avatar, message, name}) => {
   const commentsListItem = document.createElement('li');
@@ -33,20 +35,20 @@ const renderComments = ({avatar, message, name}) => {
 };
 
 const clickHandler = () => {
-  if (commentsState.totalCountComments > commentsState.countRenderComments + commentsState.step) {
-    for (let i = commentsState.countRenderComments; i < commentsState.countRenderComments + commentsState.step; i++) {
+  if (commentsState.totalCountComments > countRenderComments + step) {
+    for (let i = countRenderComments; i < countRenderComments + step; i++) {
       renderComments(commentsState.comments[i]);
     }
-    commentsState.countRenderComments = commentsState.countRenderComments + commentsState.step;
-    socialCommentsCount.textContent = `${commentsState.countRenderComments} из ${commentsState.totalCountComments} комментариев`;
+    countRenderComments = countRenderComments + step;
+    socialCommentsCount.textContent = `${countRenderComments} из ${commentsState.totalCountComments} комментариев`;
   } else {
-    for (let i = commentsState.countRenderComments; i < commentsState.totalCountComments; i++) {
+    for (let i = countRenderComments; i < commentsState.totalCountComments; i++) {
       renderComments(commentsState.comments[i]);
     }
-    commentsState.countRenderComments = commentsState.totalCountComments;
-    socialCommentsCount.textContent = `${commentsState.countRenderComments} из ${commentsState.totalCountComments} комментариев`;
+    countRenderComments = commentsState.totalCountComments;
+    socialCommentsCount.textContent = `${countRenderComments} из ${commentsState.totalCountComments} комментариев`;
   }
-  if (commentsState.countRenderComments === commentsState.totalCountComments) {
+  if (countRenderComments === commentsState.totalCountComments) {
     commentsLoader.style.display = 'none';
   }
 };
@@ -55,9 +57,9 @@ const generateModal = (data) => {
   const {url, likes, comments, description} = data;
   commentsState.comments = comments;
   commentsState.totalCountComments = comments.length;
-  commentsState.countRenderComments = 0;
+  countRenderComments = 0;
 
-  if (commentsState.totalCountComments > commentsState.countRenderComments + commentsState.step) {
+  if (commentsState.totalCountComments > countRenderComments + step) {
     commentsLoader.style.display = 'block';
   }
 
@@ -67,21 +69,9 @@ const generateModal = (data) => {
   socialCaption.textContent = description;
   socialComments.innerHTML = '';
 
-  commentsLoader.addEventListener('click', clickHandler);
+  clickHandler();
 
-  if (commentsState.totalCountComments > commentsState.countRenderComments + commentsState.step) {
-    for (let i = commentsState.countRenderComments; i < commentsState.countRenderComments + commentsState.step; i++) {
-      renderComments(commentsState.comments[i]);
-    }
-    commentsState.countRenderComments = commentsState.countRenderComments + commentsState.step;
-    socialCommentsCount.textContent = `${commentsState.countRenderComments} из ${commentsState.totalCountComments} комментариев`;
-  } else {
-    for (let i = commentsState.countRenderComments; i < commentsState.totalCountComments; i++) {
-      renderComments(commentsState.comments[i]);
-    }
-    commentsState.countRenderComments = commentsState.totalCountComments;
-    socialCommentsCount.textContent = `${commentsState.countRenderComments} из ${commentsState.totalCountComments} комментариев`;
-  }
+  commentsLoader.addEventListener('click', clickHandler);
 };
 
 const onPopupEscKeydown = (evt) => {
@@ -107,9 +97,7 @@ const closeUserModal = function () {
   commentsLoader.removeEventListener('click', clickHandler);
 };
 
-closeButton.addEventListener('click', () => {
-  closeUserModal();
-});
+closeButton.addEventListener('click', closeUserModal);
 
 
 export {generateModal, openUserModal, body};

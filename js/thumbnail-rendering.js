@@ -13,6 +13,7 @@ const randomButton = filters.querySelector('#filter-random');
 const discussedButton = filters.querySelector('#filter-discussed');
 const defaultButton = filters.querySelector('#filter-default');
 
+
 const RERENDER_DELAY = 500;
 
 const getRandomImages = function (similarPictures) {
@@ -70,9 +71,7 @@ defaultButton.addEventListener('click', debounce(() => {
   randomButton.classList.remove('img-filters__button--active');
   discussedButton.classList.remove('img-filters__button--active');
 
-  getData((similarPictures) => {
-    renderSimilarListPictures(similarPictures);
-  });
+  getData(renderSimilarListPictures);
 },RERENDER_DELAY));
 
 discussedButton.addEventListener('click', debounce(() => {
