@@ -30,7 +30,7 @@ const getData = (onSuccess, onFail) => {
     });
 };
 
-const onMessageClickOnRandomArea = function (evt) {
+const onMessageClickOnRandomArea = (evt) => {
   if (evt.target.className === 'success') {
     succesElement.classList.add('hidden');
   }
@@ -48,14 +48,14 @@ const onMessageEscKeydown = (evt) => {
     document.removeEventListener('keydown', onMessageEscKeydown);
   }
 };
-const closeMessage = function () {
+const closeMessage = () => {
   succesElement.classList.add('hidden');
   errorElement.classList.add('hidden');
 
   successButton.removeEventListener('click', closeMessage);
 };
 
-const createSuccessMessage = function () {
+const createSuccessMessage = () => {
   body.appendChild(succesElement);
 
   succesElement.classList.remove('hidden');
@@ -64,7 +64,7 @@ const createSuccessMessage = function () {
   document.addEventListener('click', onMessageClickOnRandomArea);
 };
 
-const createErrorMessage = function () {
+const createErrorMessage = () => {
   body.appendChild(errorElement);
 
   errorElement.classList.remove('hidden');

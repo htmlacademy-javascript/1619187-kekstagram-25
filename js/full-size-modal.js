@@ -34,7 +34,7 @@ const renderComments = ({avatar, message, name}) => {
   socialComments.append(commentsListItem);
 };
 
-const clickHandler = () => {
+const onCommentsLoaderClick = () => {
   if (commentsState.totalCountComments > countRenderComments + step) {
     for (let i = countRenderComments; i < countRenderComments + step; i++) {
       renderComments(commentsState.comments[i]);
@@ -69,9 +69,9 @@ const generateModal = (data) => {
   socialCaption.textContent = description;
   socialComments.innerHTML = '';
 
-  clickHandler();
+  onCommentsLoaderClick();
 
-  commentsLoader.addEventListener('click', clickHandler);
+  commentsLoader.addEventListener('click', onCommentsLoaderClick);
 };
 
 const onPopupEscKeydown = (evt) => {
@@ -82,19 +82,19 @@ const onPopupEscKeydown = (evt) => {
   }
 };
 
-const openUserModal = function () {
+const openUserModal = () => {
   bigPicture.classList.remove('hidden');
   body.classList.add('modal-open');
 
   document.addEventListener('keydown', onPopupEscKeydown);
 };
 
-const closeUserModal = function () {
+const closeUserModal = () => {
   bigPicture.classList.add('hidden');
   body.classList.remove('modal-open');
 
   document.removeEventListener('keydown', onPopupEscKeydown);
-  commentsLoader.removeEventListener('click', clickHandler);
+  commentsLoader.removeEventListener('click', onCommentsLoaderClick);
 };
 
 closeButton.addEventListener('click', closeUserModal);

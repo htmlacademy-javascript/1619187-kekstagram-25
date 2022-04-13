@@ -16,7 +16,7 @@ const defaultButton = filters.querySelector('#filter-default');
 
 const RERENDER_DELAY = 500;
 
-const getRandomImages = function (similarPictures) {
+const getRandomImages = (similarPictures) => {
   const arr = [];
 
   for (let i = 0; i < 10; i++) {
@@ -30,7 +30,7 @@ const getRandomImages = function (similarPictures) {
   return arr;
 };
 
-const renderSimilarListPictures = function (similarPictures) {
+const renderSimilarListPictures = (similarPictures) => {
   const pictures = document.querySelectorAll('.picture');
   for (let i = 0; i < pictures.length; i++) {
     pictures[i].remove();
