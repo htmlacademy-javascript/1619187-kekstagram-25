@@ -17,16 +17,9 @@ const scaleControlValue = document.querySelector('.scale__control--value');
 const submitButton = document.querySelector('.img-upload__submit');
 const InputOriginalEffect = document.querySelector('#effect-none');
 const effectSlider = document.querySelector('.effect-level__slider');
+const effectLevel = document.querySelector('.img-upload__effect-level');
 
 const IMAGE_TYPES = ['jpg', 'jpeg', 'png'];
-
-const onFormEscKeydown = (evt) => {
-  if (isEscapeKey(evt) && evt.target === inputElement) {
-    evt.preventDefault();
-    imageEditingForm.classList.add('hidden');
-    body.classList.remove('modal-open');
-  }
-};
 
 inputElement.addEventListener('change', (evt) => {
   const file = evt.target.files[0];
@@ -38,6 +31,20 @@ inputElement.addEventListener('change', (evt) => {
     picrurePreviev.src = URL.createObjectURL(file);
   }
 });
+const onFormEscKeydown = (evt) => {
+  if (isEscapeKey(evt) && evt.target !== descriptionText && evt.target !== hashtagsText) {
+    evt.preventDefault();
+    imageEditingForm.classList.add('hidden');
+    body.classList.remove('modal-open');
+    picrurePreviev.className = 'effects__preview--none';
+    picrurePreviev.style.filter = 'none';
+    inputElement.value = null;
+    InputOriginalEffect.checked = 'checked';
+    effectLevel.style.display = 'none';
+    hashtagsText.value = '';
+    descriptionText.value = '';
+  }
+};
 
 const scaleState = {
   step: 25,
@@ -46,34 +53,34 @@ const scaleState = {
   defaultValue: 100,
 };
 
-const changesScaleMin = function () {
+const onScaleMinResize = () => {
   if (parseInt(scaleControlValue.value, 10) > scaleState.mainValue) {
     scaleControlValue.value = `${parseInt(scaleControlValue.value, 10) - scaleState.step} %`;
     picrurePreviev.style.transform = `scale(${parseInt(scaleControlValue.value, 10)/100})`;
   }
 };
 
-const changesScaleMax = function () {
+const onScaleMaxResize = () => {
   if (parseInt(scaleControlValue.value, 10) < scaleState.maxValue) {
     scaleControlValue.value = `${parseInt(scaleControlValue.value, 10) + scaleState.step} %`;
     picrurePreviev.style.transform = `scale(${parseInt(scaleControlValue.value, 10)/100})`;
   }
 };
 
-const openUserForm = function () {
+const onUserFormOpen = () => {
   imageEditingForm.classList.remove('hidden');
   body.classList.add('modal-open');
   scaleControlValue.value =`${scaleState.defaultValue} %`;
 
   document.addEventListener('keydown', onFormEscKeydown);
-  scaleControlSmaller.addEventListener('click', changesScaleMin);
-  scaleControlBigger.addEventListener('click', changesScaleMax);
+  scaleControlSmaller.addEventListener('click', onScaleMinResize);
+  scaleControlBigger.addEventListener('click', onScaleMaxResize);
 };
 
-inputElement.addEventListener('change', openUserForm);
+inputElement.addEventListener('change', onUserFormOpen);
 
 
-const closeUserForm = function () {
+const onUserFormClose = () => {
   imageEditingForm.classList.add('hidden');
   body.classList.remove('modal-open');
   picrurePreviev.className = 'effects__preview--none';
@@ -81,6 +88,7 @@ const closeUserForm = function () {
   inputElement.value = null;
   InputOriginalEffect.checked = 'checked';
   effectSlider.setAttribute('disabled', true);
+  effectLevel.style.display = 'none';
   effectSlider.noUiSlider.updateOptions({
     range: {
       min: 0,
@@ -95,12 +103,12 @@ const closeUserForm = function () {
   descriptionText.value = '';
 
   document.removeEventListener('keydown', onFormEscKeydown);
-  scaleControlSmaller.removeEventListener('click', changesScaleMin);
-  scaleControlBigger.removeEventListener('click', changesScaleMax);
+  scaleControlSmaller.removeEventListener('click', onScaleMinResize);
+  scaleControlBigger.removeEventListener('click', onScaleMaxResize);
 };
 
-closeButtonForm.addEventListener('click', closeUserForm);
-closeButtonForm.addEventListener('click', closeUserForm);
+closeButtonForm.addEventListener('click', onUserFormClose);
+closeButtonForm.addEventListener('click', onUserFormClose);
 
 
 //валидатор
@@ -132,7 +140,7 @@ const setUserFormSubmit = (onSuccess) => {
         },
         () => {
           unblockSubmitButton();
-          closeUserForm();
+          onUserFormClose();
         },
         new FormData(evt.target),
         createSuccessMessage,
@@ -142,14 +150,14 @@ const setUserFormSubmit = (onSuccess) => {
   });
 };
 
-setUserFormSubmit(closeUserForm);
+setUserFormSubmit(onUserFormClose);
 
 pristine.addValidator(hashtagsText, (value) => {
   const result = value.split(' ').reduce((acc, hashtag) => {
     if (acc === false) {
       return false;
     }
-    if (hashtag.startsWith('#')) {
+    if (hashtag.startsWith('#') || value.length === 0) {
       return true;
     }
     return false;
@@ -158,6 +166,10 @@ pristine.addValidator(hashtagsText, (value) => {
 }, 'Хэш-тег начинается с символа # (решётка)', 2, false);
 
 pristine.addValidator(hashtagsText, (value) => {
+  if (value.length === 0) {
+    return true;
+  }
+
   const re = /^[#A-Za-zА-Яа-яЁё0-9 ]{1,}$/;
   const result = re.test(value);
   return result;
@@ -205,4 +217,4 @@ pristine.addValidator(hashtagsText, (value) => {
   return result;
 }, 'Хеш-тег не может состоять только из одной решётки;', 2, false);
 
-export {closeUserForm, setUserFormSubmit};
+export {onUserFormClose, setUserFormSubmit};

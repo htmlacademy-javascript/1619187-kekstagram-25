@@ -12,9 +12,7 @@ const getRandomNumber = function (min, max) {
 // };
 
 
-const getRandomArrayElement = function (elements) {
-  return elements[getRandomNumber(0, elements.length - 1)];
-};
+const getRandomArrayElement = (elements) => elements[getRandomNumber(0, elements.length - 1)];
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
